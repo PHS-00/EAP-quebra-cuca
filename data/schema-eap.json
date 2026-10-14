@@ -1,0 +1,45 @@
+{
+  "id": "eap-modelo-padrao",
+  "titulo": "Projeto de Exemplo",
+  "descricao": "Descrição rapida do projeto para contextualizar.",
+  "autor": "Nome do Autor",
+  "versao": null,
+  "nos": [
+    {
+      "id": "1",
+      "label": "Projeto Principal (Raiz)",
+      "descricao": "Entregável final e objeto do projeto",
+      "paiId": null
+    },
+    {
+      "id": "1.1",
+      "label": "Primeira Fase / Entregável A",
+      "descricao": "Descrição da primeira grande entrega",
+      "paiId": "1"
+    },
+    {
+      "id": "1.1.1",
+      "label": "Pacote de Trabalho A.1",
+      "descricao": "Subentrega detalhada do nível 2",
+      "paiId": "1.1"
+    },
+    {
+      "id": "1.1.2",
+      "label": "Pacote de Trabalho A.2",
+      "descricao": "Subentrega detalhada do nível 2",
+      "paiId": "1.1"
+    },
+    {
+      "id": "1.2",
+      "label": "Segunda Fase / Entregável B",
+      "descricao": "Descrição da segunda grande entrega",
+      "paiId": "1"
+    },
+    {
+      "id": "1.2.1",
+      "label": "Pacote de Trabalho B.1",
+      "descricao": "Subentrega detalhada do nível 2",
+      "paiId": "1.2"
+    }
+  ]
+}

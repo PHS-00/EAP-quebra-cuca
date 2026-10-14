@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quebra-Cuca EAP</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
+
+    <!-- Estilos Customizados -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+    <!-- Navbar / Cabeçalho -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container justify-content-center">
+            <a class="navbar-brand d-flex align-items-center gap-2 fw-bold " href="index.html">
+                <i class="bi bi-diagram-3-fill text-primary fs-4"></i>
+                <span>Quebra-Cuca EAP</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="container my-auto py-5">
+        
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold text-dark mb-3">
+                    Pronto para quebrar a cuca?
+                </h1>
+                <p class="lead text-secondary mb-4">
+                    Selecione um dos cenários abaixo para começar a montagem do quebra-cabeça da EAP ou envie seu próprio arquivo JSON.
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <button class="btn btn-outline-primary btn-lg px-4" data-bs-toggle="modal" data-bs-target="#modalUploadJson">
+                        <i class="bi bi-upload me-2"></i>Carregar JSON
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Lista de EAPs -->
+        <section id="lista-eap" class="pt-4">
+            <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-2">
+                <h2 class="h4 fw-bold mb-0 text-dark">
+                    <i class="bi bi-collection-fill me-2 text-primary"></i>Cenários Disponíveis
+                </h2>
+                <span class="badge text-bg-primary rounded-pill" id="total-eaps-badge">Carregando...</span>
+            </div>
+
+            <!-- Grid onde os cards de EAP serão injetados dinamicamente via js/main.js -->
+            <div class="row g-4" id="container-cards-eap">
+                
+                <!-- Card de carregamento (placeholder temporário) -->
+                <div class="col-12 text-center py-5" id="loading-state">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="text-muted mt-2">Buscando cenários de EAP...</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal para Upload de JSON Customizado -->
+    <div class="modal fade" id="modalUploadJson" tabindex="-1" aria-labelledby="modalUploadJsonLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalUploadJsonLabel">
+                        <i class="bi bi-file-earmark-code me-2 text-primary"></i>Carregar EAP Personalizada
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted mb-3">
+                        Selecione um arquivo <code>.json</code> no seu computador formatado de acordo com a estrutura do projeto.
+                    </p>
+                    <div class="mb-3">
+                        <label for="inputJsonFile" class="form-label font-monospace small">Arquivo JSON (.json)</label>
+                        <input class="form-control" type="file" id="inputJsonFile" accept=".json">
+                    </div>
+                    <div id="uploadFeedback" class="alert alert-danger d-none small mb-0" role="alert"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmarUpload">
+                        <i class="bi bi-arrow-right-circle me-1"></i>Iniciar Desafio
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="bg-dark border-top py-3 text-center text-white small">
+        <div class="container">
+            <div class="col-12 text-center">
+                <span class="fw-bold">
+                    Quebra-Cuca EAP &copy;
+                </span>
+                <p class="mb-0">
+                    Engenharia de Software I
+                </p>
+            </div>
+        </div>
+    </footer>   
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Scripts do Projeto -->
+    <script src="js/storage.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
