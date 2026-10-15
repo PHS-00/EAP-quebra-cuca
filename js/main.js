@@ -79,8 +79,9 @@ function criarCardEAP(eap) {
                     </p>
                     <div class="pt-3 border-top mt-2 d-flex align-items-center justify-content-between">
                         <small class="text-muted"><i class="bi bi-person me-1"></i>${eap.autor || 'Anônimo'}</small>
-                        <button class="btn btn-outline-primary btn-sm rounded-pill btn-selecionar-eap px-5 py-3" data-id="${eap.id}">
-                            Iniciar <i class="bi bi-arrow-right ms-1"></i>
+                        <button class="btn btn-outline-primary btn-lg rounded-pill btn-selecionar-eap btn-hover-text" data-id="${eap.id}">
+                            <span class="btn-text small">Iniciar</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
                         </button>
                     </div>
                 </div>
