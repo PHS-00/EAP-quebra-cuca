@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quebra-Cuca EAP - Área de Montagem</title>
+    <title>Quebra-Cuca EAP - Dashboard</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
@@ -11,179 +11,233 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
 
-    <!-- Estilos Customizados -->
+    <!-- CSS Global -->
     <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/dashboard.css">
+
 </head>
-<body class="bg-light d-flex flex-column min-vh-100">
+<body class="d-flex flex-column vh-100 overflow-hidden bg-body-tertiary">
 
-    <!-- Navbar / Cabeçalho -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-        <div class="container justify-content-between">
-            <a class="btn btn-outline-light btn-sm me-2" href="index.html">
-                <i class="bi bi-arrow-left me-1"></i> Voltar
-            </a>
-            <a class="navbar-brand d-flex justify-content-center gap-2 fw-bold " href="index.html">
-                <i class="bi bi-diagram-3-fill text-primary fs-4"></i>
-                <span>Quebra-Cuca EAP</span>
-            </a>
-            <span class="badge bg-primary" id="status-eap">Carregando...</span>
-        </div>
-    </nav>
-
-    <!-- Conteúdo Principal -->
-    <main class="container py-4 flex-grow-1">
-
-        <!-- Caso NENHUMA EAP tenha sido selecionada -->
-        <div id="alerta-sem-dados" class="alert alert-warning d-none text-center my-5 py-4" role="alert">
-            <i class="bi bi-exclamation-triangle-fill fs-1 text-warning mb-2 d-block"></i>
-            <h4 class="alert-heading fw-bold">Nenhum cenário de EAP selecionado!</h4>
-            <p class="mb-3">Você precisa escolher um cenário na página inicial antes de acessar a dashboard.</p>
-            <a href="index.html" class="btn btn-primary">
-                <i class="bi bi-house-door me-1"></i> Ir para a Página Inicial
-            </a>
-        </div>
-
-        <!-- Painel com Dados da EAP (Visível quando há dados) -->
-        <div id="painel-eap" class="d-none">
+    <!-- Navbar Minimalista -->
+    <header class="navbar navbar-dark bg-dark shadow-sm px-3 flex-shrink-0 z-2">
+        <div class="container-fluid d-flex align-items-center justify-content-between p-0">
             
-            <!-- Cabeçalho do Projeto -->
-            <div class="bg-white p-4 rounded-3 shadow-sm border mb-4">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="badge bg-secondary font-monospace" id="eap-id">ID</span>
-                    <small class="text-muted"><i class="bi bi-person me-1"></i><span id="eap-autor">Autor</span></small>
-                </div>
-                <h2 class="fw-bold text-dark mb-2" id="eap-titulo">Título da EAP</h2>
-                <p class="text-secondary mb-0" id="eap-descricao">Descrição do cenário de EAP.</p>
+            <!-- Esquerda: Seta de Voltar com Modal de Confirmação -->
+            <button class="btn btn-outline-light btn-lg btn-hover-text rounded-pill" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#modalConfirmarVoltar"
+                    title="Voltar ao início">
+                <i class="bi bi-arrow-left fs-6"></i>
+                <span class="btn-text small">Voltar</span>
+            </button>
+
+            <!-- Centro: Nome do Projeto e Status -->
+            <div class="text-white text-center text-truncate mx-2 px-2" style="max-width: 500px;">
+                <span class="fw-bold fs-6 d-block text-truncate" id="eap-titulo-display">Carregando Projeto...</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace mt-1" style="font-size: 0.7rem;" id="eap-status-display">
+                    <i class="bi bi-check-circle-fill me-1"></i>Salvo
+                </span>
             </div>
 
-            <div class="row g-5">
-                <!-- Coluna 1: Lista Visual de Nós do JSON -->
-                <div class="col-lg-5">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
-                            <h5 class="fw-bold mb-0 text-primary">
-                                <i class="bi bi-diagram-3 me-2"></i>Elementos para Montagem
-                            </h5>
-                            <span class="badge bg-info text-dark" id="qtd-nos-badge">0 itens</span>
-                        </div>
-                        <div class="card-body">
-                            <p class="small text-muted mb-3">
-                                Abaixo estão os nós recuperados do JSON que serão usados no Canvas de montagem:
-                            </p>
-                            <div class="list-group" id="lista-nos-eap">
-                                <!-- Os elementos serão injetados via JS -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Direita: Botão Concluir com Modal de Confirmação -->
+            <button class="btn btn-success btn-lg btn-hover-text rounded-pill" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#modalConfirmarConcluir"
+                    title="Concluir EAP">
+                <i class="bi bi-check2-square fs-6"></i>
+                <span class="btn-text small">Concluir</span>
+            </button>
 
-                <!-- Coluna 2: Inspeção do JSON Bruto (Debug) -->
-                <div class="col-lg-7">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-header bg-dark text-white py-3 d-flex align-items-center justify-content-between">
-                            <h5 class="fw-bold mb-0 fs-6">
-                                <i class="bi bi-file-earmark-code me-2 text-warning"></i>JSON Carregado (Preview)
-                            </h5>
-                            <button class="btn btn-sm btn-outline-light" id="btn-copiar-json">
-                                <i class="bi bi-clipboard me-1"></i>Copiar
+        </div>
+    </header>
+
+    <!-- Layout Principal -->
+    <div class="d-flex flex-grow-1 overflow-hidden position-relative">
+
+        <!-- Offcanvas Lateral Nativo do Bootstrap -->
+        <aside class="offcanvas offcanvas-start bg-white shadow-lg border-end" 
+               tabindex="-1" 
+               id="sidebar-nos" 
+               data-bs-scroll="true" 
+               data-bs-backdrop="true" 
+               style="width: 420px;">
+            
+            <!-- Cabeçalho do Offcanvas -->
+            <div class="offcanvas-header border-bottom bg-light py-3">
+                <div>
+                    <h6 class="offcanvas-title fw-bold text-dark">
+                        <i class="bi bi-boxes me-2 text-primary"></i>Menu Peças/Nós
+                    </h6>
+                    <span class="badge text-bg-primary rounded-pill" id="total-eaps-badge">Carregando...</span>
+                    <small class="text-muted" >Nós disponíveis</small>
+                </div>
+                <button type="button" class="btn-close btn-lg" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+            </div>
+
+            <!-- Corpo do Offcanvas (Lista de Peças) -->
+            <div class="offcanvas-body bg-body-secondary d-flex flex-column align-items-center p-3" id="container-nos-sidebar">
+
+                <!-- Card Simplificado da Sidebar (com Collapse Nativo) -->
+                <!-- <div class="card mb-2 shadow-sm border eap-card w-auto p-2">
+                    <div class="card-body p-2">
+                        <div class="d-flex align-items-center justify-content-between gap-2">
+                            Título do Nó 
+                            <span class="fw-semibold text-dark fs-5 flex-grow-1 text-truncate">
+                                Planejamento
+                            </span>
+                            
+                            Botão de Expandir/Recolher 
+                            <button class="btn btn-lg btn-outline-light border-0 text-secondary p-2" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#desc-no-1.1" 
+                                    aria-expanded="false" 
+                                    aria-controls="desc-no-1.1"
+                                    title="Ver descrição">
+                                <i class="bi bi-chevron-down"></i>
                             </button>
                         </div>
-                        <div class="card-body bg-dark text-light p-0">
-                            <pre class="p-3 mb-0 font-monospace text-warning small" id="json-raw"></pre>
+                        
+                        Descrição Oculta (Nativamente gerenciada pelo Bootstrap) 
+                        <div class="collapse mt-2 pt-2 border-top small text-secondary" id="desc-no-1.1">
+                            Fase inicial de definição de escopo e cronograma do projeto.
                         </div>
                     </div>
+                </div> --> 
+
+            </div>
+        </aside>
+
+        <!-- Botão Flutuante para Abrir a Gaveta de Peças (Seta Centralizada à Esquerda) -->
+        <button class="btn btn-outline-primary btn-lg shadow position-fixed top-50 start-0 translate-middle-y z-3 rounded-end-pill py-3 px-2" 
+                type="button" 
+                data-bs-toggle="offcanvas" 
+                data-bs-target="#sidebar-nos" 
+                title="Abrir Menu de Peças">
+            <i class="bi bi-chevron-right fs-6"></i>
+        </button>
+
+        <!-- Área de Trabalho / Canvas -->
+        <main id="canvas-area" class="flex-grow-1 bg-body-secondary overflow-auto p-4 w-100 canvas-dotted-bg">
+            
+            
+        </main>
+
+        <!-- Botão Flutuante (FAB) Criar Novo Nó -->
+        <div class="position-fixed bottom-0 end-0 m-3 m-md-4 z-3">
+            <button class="btn btn-primary rounded-pill shadow-lg p-3 d-flex align-items-center justify-content-center btn-hover-text" 
+                    id="btn-add-no-custom" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#modalCriarNo"
+                    title="Criar Novo Nó">
+                <i class="bi bi-plus-lg fs-5"></i>
+                <span class="btn-text">Novo Nó</span>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Modal de Confirmação: Voltar -->
+    <div class="modal fade" id="modalConfirmarVoltar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-dark">Sair da Montagem?</h5>
+                    <button type="button" class="btn-close btn-lg" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body text-secondary small py-3">
+                    As alterações feitas na estrutura <b>não serão salvas</b>. Deseja retornar à página inicial?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-lg btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a href="index.html" class="btn btn-lg btn-primary">Confirmar</a>
                 </div>
             </div>
-
         </div>
+    </div>
 
-    </main>
-
-    <!-- Rodapé -->
-    <footer class="bg-dark border-top py-3 text-center text-white small">
-        <div class="container">
-            <div class="col-12 text-center">
-                <span class="fw-bold">
-                    Quebra-Cuca EAP &copy;
-                </span>
-                <p class="mb-0">
-                    Engenharia de Software I
-                </p>
+    <!-- Modal de Confirmação: Concluir -->
+    <div class="modal fade" id="modalConfirmarConcluir" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-dark">
+                        <i class="bi bi-check2-circle text-success me-2"></i>Finalizar Montagem da EAP
+                    </h5>
+                    <button type="button" class="btn-close btn-lg" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body text-secondary">
+                    <p class="mb-2">Você está prestes a concluir a construção da EAP.</p>
+                    <p class="small text-muted mb-0">
+                        O sistema irá comparar sua estrutura com a EAP de referência e gerar a análise para o debate em sala de aula.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-lg btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-lg btn-success" id="btn-confirmar-conclusao">
+                        Confirmar e Comparar
+                    </button>
+                </div>
             </div>
         </div>
-    </footer>
+    </div>
+
+    <!-- Modal para Criar Novo Nó Customizado -->
+    <div class="modal fade" id="modalCriarNo" tabindex="-1" aria-labelledby="modalCriarNoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="modalCriarNoLabel">
+                        <i class="bi bi-plus-circle text-primary"></i> Criar Novo Nó
+                    </h5>
+                    <button type="button" class="btn-close btn-lg" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+
+                <form id="form-criar-no">
+                    <div class="modal-body">
+                        <!-- Título do Nó -->
+                        <div class="mb-3">
+                            <label for="input-no-label" class="form-label fw-semibold small text-dark">
+                                Título <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                class="form-control" 
+                                id="input-no-label" 
+                                placeholder="Ex: Treinamento da Equipe" 
+                                required>
+                        </div>
+
+                        <!-- Descrição -->
+                        <div class="mb-3">
+                            <label for="input-no-desc" class="form-label fw-semibold small text-dark">
+                                Descrição
+                            </label>
+                            <textarea class="form-control" 
+                                    id="input-no-desc" 
+                                    rows="3" 
+                                    placeholder="Detalhes sobre..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-lg btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <!-- CORREÇÃO: type="submit" para disparar o formulário no JS -->
+                        <button type="submit" class="btn btn-lg btn-primary btn-hover-text" id="btn-salvar-no-custom">
+                            <span class="btn-text">Adicionar Nó</span>
+                            <i class="bi bi-check-lg me-1"></i>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Scripts do Projeto -->
     <script src="js/storage.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Recupera os dados salvos no localStorage via EAPStorage
-            const eap = EAPStorage.obterEAP();
-
-            const alertaSemDados = document.getElementById('alerta-sem-dados');
-            const painelEAP = document.getElementById('painel-eap');
-            const badgeStatus = document.getElementById('status-eap');
-
-            // 2. Se não houver dados salvos, exibe o alerta
-            if (!eap) {
-                badgeStatus.textContent = 'Sem EAP';
-                badgeStatus.className = 'badge bg-danger';
-                alertaSemDados.classList.remove('d-none');
-                return;
-            }
-
-            // 3. Se houver dados, preenche a interface
-            badgeStatus.textContent = 'EAP Carregada';
-            badgeStatus.className = 'badge bg-success';
-            painelEAP.classList.remove('d-none');
-
-            // Preenche metadados
-            document.getElementById('eap-id').textContent = eap.id || 'N/A';
-            document.getElementById('eap-titulo').textContent = eap.titulo || 'Sem Título';
-            document.getElementById('eap-descricao').textContent = eap.descricao || 'Sem descrição.';
-            document.getElementById('eap-autor').textContent = eap.autor || 'Desconhecido';
-            document.getElementById('qtd-nos-badge').textContent = `${eap.nos ? eap.nos.length : 0} nós`;
-
-            // Imprime a lista visual de nós
-            const containerLista = document.getElementById('lista-nos-eap');
-            containerLista.innerHTML = '';
-
-            if (eap.nos && eap.nos.length > 0) {
-                eap.nos.forEach(no => {
-                    const itemHTML = `
-                        <div class="list-group-item list-group-item-action d-flex align-items-center justify-content-between py-3">
-                            <div>
-                                <div class="fw-bold text-dark">
-                                    <span class="badge bg-primary me-2">${no.id}</span>
-                                    ${no.label}
-                                </div>
-                                <small class="text-muted d-block mt-1">${no.descricao || 'Sem detalhes'}</small>
-                            </div>
-                            <span class="badge bg-light text-dark border">
-                                Pai: ${no.paiId === null ? '<em>Nenhum (Raiz)</em>' : `<code>${no.paiId}</code>`}
-                            </span>
-                        </div>
-                    `;
-                    containerLista.insertAdjacentHTML('beforeend', itemHTML);
-                });
-            } else {
-                containerLista.innerHTML = '<div class="alert alert-info mb-0">Nenhum nó cadastrado neste JSON.</div>';
-            }
-
-            // Imprime o JSON bruto formatado na área escura
-            const jsonString = JSON.stringify(eap, null, 2);
-            document.getElementById('json-raw').textContent = jsonString;
-
-            // Botão para copiar o JSON
-            document.getElementById('btn-copiar-json').addEventListener('click', () => {
-                navigator.clipboard.writeText(jsonString);
-                alert('JSON copiado para a área de transferência!');
-            });
-        });
-    </script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>

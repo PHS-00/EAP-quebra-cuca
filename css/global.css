@@ -1,0 +1,43 @@
+/* Efeito de expansão do texto no hover para botões com ícone */
+.btn-hover-text .btn-text {
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 0.3s ease, opacity 0.3s ease, margin-left 0.3s ease;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.btn-hover-text:hover .btn-text {
+    max-width: 150px;
+    opacity: 1;
+    margin-left: 0.35rem;
+}
+
+/* Fundo pontilhado do Canvas */
+.canvas-dotted-bg {
+    background-color: #f8f9fa;
+    background-image: radial-gradient(#cbd5e1 1.8px, transparent 1.8px);
+    background-size: 24px 24px;
+}
+
+/* Container de Nível Hierárquico */
+.level-container {
+    border: 2px dashed #94a3b8;
+    background-color: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(2px);
+    border-radius: 0.75rem;
+    width: 100%;
+    max-width: 900px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Estilo do card arrastável */
+.eap-card {
+    cursor: grab;
+    user-select: none;
+}
+.eap-card:active {
+    cursor: grabbing;
+}
