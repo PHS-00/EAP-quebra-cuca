@@ -1,4 +1,7 @@
-/* Efeito de expansão do texto no hover para botões com ícone */
+/* ==========================================================================
+   1. BOTÕES FLUTUANTES (FAB) E ANIMAÇÕES
+   ========================================================================== */
+
 .btn-hover-text .btn-text {
     max-width: 0;
     opacity: 0;
@@ -15,29 +18,83 @@
     margin-left: 0.35rem;
 }
 
-/* Fundo pontilhado do Canvas */
-.canvas-dotted-bg {
+/* Cursor de arrasto para os cards na gaveta */
+.eap-card[draggable="true"] {
+    cursor: grab;
+}
+
+.eap-card[draggable="true"]:active {
+    cursor: grabbing;
+}
+
+/* ==========================================================================
+   2. ÁREA DE TRABALHO / CANVAS (#canvas-area, #canvas-viewport, #canvas-svg)
+   ========================================================================== */
+
+#canvas-area {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
     background-color: #f8f9fa;
     background-image: radial-gradient(#cbd5e1 1.8px, transparent 1.8px);
     background-size: 24px 24px;
-}
-
-/* Container de Nível Hierárquico */
-.level-container {
-    border: 2px dashed #94a3b8;
-    background-color: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(2px);
-    border-radius: 0.75rem;
-    width: 100%;
-    max-width: 900px;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-
-/* Estilo do card arrastável */
-.eap-card {
-    cursor: grab;
     user-select: none;
 }
-.eap-card:active {
-    cursor: grabbing;
+
+#canvas-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: 0 0;
+    will-change: transform;
+}
+
+#canvas-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: visible;
+}
+
+#canvas-nodes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+/* ==========================================================================
+   3. ESTILO DA ÁREA DE SOLTURA E LINHA SVG
+   ========================================================================== */
+
+#canvas-nodes .eap-card-node {
+    position: relative;
+    min-width: 240px;
+    max-width: 280px;
+}
+
+/* Caixa de soltura pontilhada com destaque */
+.eap-drop-zone {
+    min-width: 240px;
+    min-height: 80px;
+    border: 2px dashed gray !important;
+    background-color: rgba(13, 110, 253, 0.05);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Linha pontilhada no SVG */
+.eap-connection-line-dashed {
+    fill: none;
+    stroke: gray;
+    stroke-width: 2px;
+    stroke-dasharray: 8 6;
 }

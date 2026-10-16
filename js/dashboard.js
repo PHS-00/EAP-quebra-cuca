@@ -1,5 +1,5 @@
 /**
- * Lógica da Dashboard / Área de Trabalho do Quebra-Cuca EAP (Versão Estável)
+ * Lógica do Dashboard, Controle de Estado e Modal
  */
 
 let eapAtual = null;
@@ -8,10 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Carrega os dados da EAP salvos no localStorage
     carregarEAP();
 
-    // 2. Configura eventos da interface (Offcanvas e cliques)
-    configurarEventosUI();
-
-    // 3. Configura o formulário de criação de novo nó via Modal
+    // 2. Configura os controles do formulário e do modal
     configurarFormularioNovoNo();
 });
 
@@ -27,19 +24,22 @@ function carregarEAP() {
         return;
     }
 
-    // Exibe o título
     const tituloDisplay = document.getElementById('eap-titulo-display');
     if (tituloDisplay) {
         tituloDisplay.textContent = eapAtual.titulo || 'EAP sem título';
     }
 
     atualizarStatusSalvamento('salvo');
-    renderizarListaNos();
     renderizarPecasSidebar();
+
+    // Chama a renderização inicial do canvas (definida em canvas.js)
+    if (typeof renderizarInicialCanvas === 'function') {
+        renderizarInicialCanvas();
+    }
 }
 
 /**
- * Gerencia o badge visual de salvamento no Navbar
+ * Gerencia o badge visual de status de salvamento no Navbar
  */
 function atualizarStatusSalvamento(status) {
     const badgeStatus = document.getElementById('eap-status-display');
@@ -62,70 +62,105 @@ function atualizarStatusSalvamento(status) {
 }
 
 /**
- * Renderiza a lista de nós na área principal
+ * Salva as alterações no localStorage
  */
-function renderizarListaNos() {
-    const container = document.getElementById('container-lista-nos');
-    if (!container || !eapAtual || !eapAtual.nos) return;
+function salvarEstadoSilencioso() {
+    atualizarStatusSalvamento('salvando');
+    EAPStorage.salvarEAP(eapAtual);
 
-    container.innerHTML = '';
-
-    eapAtual.nos.forEach(no => {
-        const isRaiz = no.paiId === null;
-        const itemHTML = `
-            <div class="list-group-item p-3 d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="d-flex align-items-center gap-2 mb-1">
-                        ${isRaiz ? '<span class="badge bg-warning text-dark fw-bold">RAIZ</span>' : '<span class="badge bg-secondary">Nó</span>'}
-                        ${no.isNovo ? '<span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">Novo</span>' : '<span class="badge bg-warning-subtle text-warning-subtle border border-warning-subtle">Normal</span>'}
-                        <h6 class="fw-semibold mb-0">${no.label}</h6>
-                    </div>
-                    <small class="text-muted">${no.descricao || 'Sem descrição cadastrada.'}</small>
-                </div>
-                <span class="font-monospace text-muted small">ID: ${no.id} | Pai: ${no.paiId || 'Nenhum'}</span>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', itemHTML);
-    });
+    setTimeout(() => {
+        atualizarStatusSalvamento('salvo');
+    }, 300);
 }
 
 /**
- * Renderiza os nós na gaveta lateral (Offcanvas)
+ * Renderiza as peças disponíveis na gaveta lateral (Sidebar)
  */
 function renderizarPecasSidebar() {
     const container = document.getElementById('container-nos-sidebar');
     const badgeTotal = document.getElementById('total-eaps-badge');
 
-    if (!container || !eapAtual) return;
+    if (!container || !eapAtual || !eapAtual.nos) return;
 
-    const pecas = eapAtual.nos.filter(no => no.paiId !== null);
+    // Filtra o nó raiz original para não exibir na gaveta
+    const noRaizOriginal = eapAtual.nos.find(no => (!no.paiId || no.paiId === null || no.paiId === '') && !no.isNovo);
+    const pecasDisponiveis = eapAtual.nos.filter(no => no !== noRaizOriginal && !no.noCanvas);
 
-    if (badgeTotal) badgeTotal.textContent = pecas.length;
+    if (badgeTotal) {
+        badgeTotal.textContent = pecasDisponiveis.length;
+    }
 
     container.innerHTML = '';
 
-    pecas.forEach(no => {
+    if (pecasDisponiveis.length === 0) {
+        container.innerHTML = `
+            <div class="text-center text-muted py-4">
+                <i class="bi bi-check-circle fs-3 text-success d-block mb-2"></i>
+                <small>Todas as peças foram posicionadas na árvore!</small>
+            </div>
+        `;
+        return;
+    }
+
+    pecasDisponiveis.forEach(no => {
+        const idSanitizado = String(no.id).replace(/[^a-zA-Z0-9_-]/g, '-');
+        const temDescricao = no.descricao && no.descricao.trim() !== '';
+
         const cardHTML = `
-            <div class="card my-2 shadow-sm border p-2">
+            <div class="card shadow-sm border eap-card w-auto p-2" 
+                 data-id="${no.id}" 
+                 draggable="true">
                 <div class="card-body p-2">
-                    <span class="fw-semibold text-dark fs-6">${no.label}</span>
-                    ${no.descricao ? `<p class="small text-muted mb-0 mt-1">${no.descricao}</p>` : ''}
+                    <div class="d-flex align-items-center justify-content-between gap-2">
+                        ${no.isNovo ? '<span class="badge bg-info-subtle text-info-emphasis border border-info-subtle me-1 mb-1" style="font-size: 0.7rem;">Novo</span>' : '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning me-1 mb-1" style="font-size: 0.7rem;">Normal</span>'}
+                        <span class="fw-semibold text-dark fs-6 d-block lh-sm text-truncate" title="${no.label}">
+                            ${no.label}
+                        </span>
+                        
+                        ${temDescricao ? `
+                            <button class="btn btn-lg btn-outline-light border-0 text-secondary p-3 flex-shrink-0" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#desc-no-${idSanitizado}" 
+                                    aria-expanded="false" 
+                                    aria-controls="desc-no-${idSanitizado}"
+                                    title="Ver descrição">
+                                <i class="bi bi-chevron-down fs-6"></i>
+                            </button>
+                        ` : '<i class="bi bi-exclamation-diamond text-warning-emphasis p-3" title="Sem descrição"></i>'}
+                    </div>
+                    
+                    ${temDescricao ? `
+                        <div class="collapse mt-2 pt-2 border-top small text-secondary text-break" id="desc-no-${idSanitizado}">
+                            ${no.descricao}
+                        </div>
+                    ` : ''}
                 </div>
             </div>
         `;
+
         container.insertAdjacentHTML('beforeend', cardHTML);
+    });
+
+    // Associa eventos de dragstart nos cards da gaveta
+    container.querySelectorAll('.eap-card').forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+            const noId = card.getAttribute('data-id');
+            e.dataTransfer.setData('text/plain', noId);
+
+            const sidebarEl = document.getElementById('sidebar-nos');
+            if (sidebarEl) {
+                const bsOffcanvas = bootstrap.Offcanvas.getInstance(sidebarEl);
+                if (bsOffcanvas) {
+                    bsOffcanvas.hide();
+                }
+            }
+        });
     });
 }
 
 /**
- * Eventos básicos de UI
- */
-function configurarEventosUI() {
-    // Reservado para interações de modal/offcanvas se necessário
-}
-
-/**
- * Processa a criação de novos nós pelo formulário modal
+ * Processa a criação de um novo nó personalizado via Modal
  */
 function configurarFormularioNovoNo() {
     const form = document.getElementById('form-criar-no');
@@ -139,34 +174,39 @@ function configurarFormularioNovoNo() {
         const inputTitulo = document.getElementById('input-no-label');
         const inputDesc = document.getElementById('input-no-desc');
 
-        const titulo = inputTitulo.value.trim();
+        const titulo = inputTitulo ? inputTitulo.value.trim() : '';
         const descricao = inputDesc ? inputDesc.value.trim() : '';
 
         if (!titulo) return;
 
-        const noRaiz = eapAtual.nos.find(n => n.paiId === null);
         const novoNo = {
             id: `custom-${Date.now()}`,
             label: titulo,
             descricao: descricao,
-            paiId: noRaiz ? noRaiz.id : '1',
+            paiId: null,
+            noCanvas: false,
             isNovo: true
         };
 
+        if (!eapAtual.nos) eapAtual.nos = [];
         eapAtual.nos.push(novoNo);
 
-        atualizarStatusSalvamento('salvando');
-        EAPStorage.salvarEAP(eapAtual);
-
-        setTimeout(() => {
-            atualizarStatusSalvamento('salvo');
-        }, 300);
-
-        renderizarListaNos();
+        salvarEstadoSilencioso();
         renderizarPecasSidebar();
 
         form.reset();
-        const bsModal = bootstrap.Modal.getInstance(modalEl);
-        if (bsModal) bsModal.hide();
+
+        // Fecha o modal de forma segura utilizando getOrCreateInstance
+        if (modalEl) {
+            const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            bsModal.hide();
+        }
+
+        // Abre a gaveta para exibir o novo nó recém-criado
+        const sidebarEl = document.getElementById('sidebar-nos');
+        if (sidebarEl) {
+            const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(sidebarEl);
+            bsOffcanvas.show();
+        }
     });
 }

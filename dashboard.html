@@ -22,7 +22,7 @@
         <div class="container-fluid d-flex align-items-center justify-content-between p-0">
             
             <!-- Esquerda: Seta de Voltar com Modal de Confirmação -->
-            <button class="btn btn-outline-light btn-lg btn-hover-text rounded-pill" 
+            <button class="btn btn-outline-light btn-sm btn-hover-text rounded-pill" 
                     data-bs-toggle="modal" 
                     data-bs-target="#modalConfirmarVoltar"
                     title="Voltar ao início">
@@ -39,7 +39,7 @@
             </div>
 
             <!-- Direita: Botão Concluir com Modal de Confirmação -->
-            <button class="btn btn-success btn-lg btn-hover-text rounded-pill" 
+            <button class="btn btn-success btn-sm btn-hover-text rounded-pill" 
                     data-bs-toggle="modal" 
                     data-bs-target="#modalConfirmarConcluir"
                     title="Concluir EAP">
@@ -59,7 +59,7 @@
                id="sidebar-nos" 
                data-bs-scroll="true" 
                data-bs-backdrop="true" 
-               style="width: 420px;">
+               style="min-width: 25%; max-width: 85%;">
             
             <!-- Cabeçalho do Offcanvas -->
             <div class="offcanvas-header border-bottom bg-light py-3">
@@ -68,43 +68,13 @@
                         <i class="bi bi-boxes me-2 text-primary"></i>Menu Peças/Nós
                     </h6>
                     <span class="badge text-bg-primary rounded-pill" id="total-eaps-badge">Carregando...</span>
-                    <small class="text-muted" >Nós disponíveis</small>
+                    <small class="text-muted">Nós disponíveis</small>
                 </div>
                 <button type="button" class="btn-close btn-lg" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
             </div>
 
             <!-- Corpo do Offcanvas (Lista de Peças) -->
-            <div class="offcanvas-body bg-body-secondary d-flex flex-column align-items-center p-3" id="container-nos-sidebar">
-
-                <!-- Card Simplificado da Sidebar (com Collapse Nativo) -->
-                <!-- <div class="card mb-2 shadow-sm border eap-card w-auto p-2">
-                    <div class="card-body p-2">
-                        <div class="d-flex align-items-center justify-content-between gap-2">
-                            Título do Nó 
-                            <span class="fw-semibold text-dark fs-5 flex-grow-1 text-truncate">
-                                Planejamento
-                            </span>
-                            
-                            Botão de Expandir/Recolher 
-                            <button class="btn btn-lg btn-outline-light border-0 text-secondary p-2" 
-                                    type="button" 
-                                    data-bs-toggle="collapse" 
-                                    data-bs-target="#desc-no-1.1" 
-                                    aria-expanded="false" 
-                                    aria-controls="desc-no-1.1"
-                                    title="Ver descrição">
-                                <i class="bi bi-chevron-down"></i>
-                            </button>
-                        </div>
-                        
-                        Descrição Oculta (Nativamente gerenciada pelo Bootstrap) 
-                        <div class="collapse mt-2 pt-2 border-top small text-secondary" id="desc-no-1.1">
-                            Fase inicial de definição de escopo e cronograma do projeto.
-                        </div>
-                    </div>
-                </div> --> 
-
-            </div>
+            <div class="offcanvas-body bg-body-secondary d-flex flex-column align-items-stretch w-100 p-2 p-sm-3 gap-2 overflow-y-auto" id="container-nos-sidebar"></div>
         </aside>
 
         <!-- Botão Flutuante para Abrir a Gaveta de Peças (Seta Centralizada à Esquerda) -->
@@ -117,23 +87,47 @@
         </button>
 
         <!-- Área de Trabalho / Canvas -->
-        <main id="canvas-area" class="flex-grow-1 bg-body-secondary overflow-auto p-4 w-100 canvas-dotted-bg">
+        <main id="canvas-area" class="flex-grow-1 position-relative w-100 h-100 overflow-hidden">
             
-            
+            <!-- Viewport Nativo com Transformação para Pan e Zoom -->
+            <div id="canvas-viewport" class="w-100 h-100 position-absolute top-0 start-0">
+                
+                <!-- Camada SVG para desenhar as conexões ortogonais (Linhas EAP) -->
+                <svg id="canvas-svg" class="position-absolute top-0 start-0 w-100 h-100 pe-none" style="z-index: 1; overflow: visible;"></svg>
+                
+                <!-- Container de Nó/Cards Nativos em HTML -->
+                <div id="canvas-nodes" class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 2;"></div>
+
+            </div>
+
+            <!-- Painel de Ações Fixas na Tela (Fora da área de zoom/pan) -->
+            <div class="position-fixed bottom-0 end-0 p-3 z-3 d-flex flex-column align-items-end gap-3">
+
+                <!-- Botão Flutuante (FAB) Criar Novo Nó -->
+                <button class="btn btn-primary rounded-pill shadow-lg p-3 d-flex align-items-center justify-content-center btn-hover-text" 
+                        id="btn-add-no-custom" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalCriarNo"
+                        title="Criar Novo Nó">
+                    <i class="bi bi-plus-lg fs-5"></i>
+                    <span class="btn-text ms-2">Novo Nó</span>
+                </button>
+
+                <!-- Controles Flutuantes de Zoom -->
+                <div class="bg-white shadow-sm border rounded-pill p-1 d-flex align-items-center gap-1">
+                    <button class="btn btn-lg btn-light rounded-circle" id="btn-zoom-out" title="Reduzir Zoom (-)">
+                        <i class="bi bi-dash-lg"></i>
+                    </button>
+                    <span class="font-monospace small px-2 fw-semibold text-secondary" id="zoom-percentage">100%</span>
+                    <button class="btn btn-lg btn-light rounded-circle" id="btn-zoom-in" title="Aumentar Zoom (+)">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                    <button class="btn btn-lg btn-outline-secondary rounded-circle ms-1" id="btn-zoom-reset" title="Centralizar e Resetar Zoom">
+                        <i class="bi bi-aspect-ratio"></i>
+                    </button>
+                </div>
+            </div>
         </main>
-
-        <!-- Botão Flutuante (FAB) Criar Novo Nó -->
-        <div class="position-fixed bottom-0 end-0 m-3 m-md-4 z-3">
-            <button class="btn btn-primary rounded-pill shadow-lg p-3 d-flex align-items-center justify-content-center btn-hover-text" 
-                    id="btn-add-no-custom" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#modalCriarNo"
-                    title="Criar Novo Nó">
-                <i class="bi bi-plus-lg fs-5"></i>
-                <span class="btn-text">Novo Nó</span>
-            </button>
-        </div>
-
     </div>
 
     <!-- Modal de Confirmação: Voltar -->
@@ -174,7 +168,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-lg btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-lg btn-success" id="btn-confirmar-conclusao">
-                        Confirmar e Comparar
+                        Confirmar
                     </button>
                 </div>
             </div>
@@ -221,7 +215,6 @@
 
                     <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-lg btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <!-- CORREÇÃO: type="submit" para disparar o formulário no JS -->
                         <button type="submit" class="btn btn-lg btn-primary btn-hover-text" id="btn-salvar-no-custom">
                             <span class="btn-text">Adicionar Nó</span>
                             <i class="bi bi-check-lg me-1"></i>
@@ -238,6 +231,8 @@
 
     <!-- Scripts do Projeto -->
     <script src="js/storage.js"></script>
+    <script src="js/canvas.js"></script>
     <script src="js/dashboard.js"></script>
+    
 </body>
 </html>
