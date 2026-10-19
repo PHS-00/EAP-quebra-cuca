@@ -71,7 +71,7 @@ function criarCardEAP(eap) {
                         <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
                             <i class="bi bi-diagram-2 me-1"></i>${qtdNos} elementos
                         </span>
-                        <small class="px-2 py-2 badge rounded-pill text-bg-${eap.versao == null ? 'warning' : 'primary'}">${eap.versao || 'Teste'}</small>
+                        <small class="px-2 py-2 badge bg-${eap.versao == null ? 'warning' : 'primary'}-subtle text-${eap.versao == null ? 'warning' : 'primary'}-emphasis border border-${eap.versao == null ? 'warning' : 'primary'} rounded-pill text-bg-${eap.versao == null ? 'warning' : 'primary'}" style="font-size: 0.7rem;" >${eap.versao || 'Teste'}</small>
                     </div>
                     <h5 class="card-title fw-bold text-dark">${eap.titulo}</h5>
                     <p class="card-text text-secondary small flex-grow-1">

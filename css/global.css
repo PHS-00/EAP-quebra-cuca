@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. BOTÕES FLUTUANTES (FAB) E ANIMAÇÕES
+   1. BOTÕES FLUTUANTES (FAB) E INTERAÇÕES
    ========================================================================== */
 
 .btn-hover-text .btn-text {
@@ -18,7 +18,6 @@
     margin-left: 0.35rem;
 }
 
-/* Cursor de arrasto para os cards na gaveta */
 .eap-card[draggable="true"] {
     cursor: grab;
 }
@@ -28,7 +27,7 @@
 }
 
 /* ==========================================================================
-   2. ÁREA DE TRABALHO / CANVAS (#canvas-area, #canvas-viewport, #canvas-svg)
+   2. ÁREA DE TRABALHO / CANVAS
    ========================================================================== */
 
 #canvas-area {
@@ -42,59 +41,109 @@
     user-select: none;
 }
 
-#canvas-viewport {
+#canvas-viewport,
+#canvas-svg,
+#canvas-nodes,
+#canvas-level-boxes {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+#canvas-viewport {
     transform-origin: 0 0;
     will-change: transform;
 }
 
-#canvas-svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+#canvas-svg,
+#canvas-level-boxes {
     pointer-events: none;
-    z-index: 1;
-    overflow: visible;
 }
 
-#canvas-nodes {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-}
+#canvas-svg { z-index: 2; overflow: visible; }
+#canvas-nodes { z-index: 3; }
+#canvas-level-boxes { z-index: 1; }
 
 /* ==========================================================================
-   3. ESTILO DA ÁREA DE SOLTURA E LINHA SVG
+   3. CAIXAS DE NÍVEL, BANDEIRAS E CARDS
    ========================================================================== */
+
+.eap-level-box {
+    position: absolute;
+    border: 2px dashed #94a3b8;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.45);
+    transition: all 0.15s ease-out;
+    box-sizing: border-box;
+}
+
+/* Cores dinâmicas das faixas por nível */
+.eap-level-box-1 { border-color: #f59e0b !important; background-color: rgba(245, 158, 11, 0.02); }
+.eap-level-box-2 { border-color: #10b981 !important; background-color: rgba(16, 185, 129, 0.02); }
+.eap-level-box-3 { border-color: #3b82f6 !important; background-color: rgba(59, 130, 246, 0.02); }
+.eap-level-box-4 { border-color: #8b5cf6 !important; background-color: rgba(139, 92, 246, 0.02); }
+.eap-level-box-5 { border-color: #ec4899 !important; background-color: rgba(236, 72, 153, 0.02); }
+.eap-level-box-6 { border-color: #f50b0b !important; background-color: rgba(245, 158, 11, 0.02); }
+.eap-level-box-7 { border-color: #b91072 !important; background-color: rgba(16, 185, 129, 0.02); }
+.eap-level-box-8 { border-color: #f6b53b !important; background-color: rgba(59, 130, 246, 0.02); }
+.eap-level-box-9 { border-color: #5c73f6 !important; background-color: rgba(139, 92, 246, 0.02); }
+.eap-level-box-10 { border-color: #ec48bb !important; background-color: rgba(236, 72, 153, 0.02); }
+
+/* Bandeira do Nível fixada na borda superior direita */
+.eap-level-tag {
+    position: absolute;
+    top: 0;
+    right: 1.25rem;
+    transform: translateY(-50%);
+    font-weight: 700;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    user-select: none;
+    padding: 3px 12px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    z-index: 5;
+}
 
 #canvas-nodes .eap-card-node {
     position: relative;
-    min-width: 240px;
-    max-width: 280px;
+    width: fit-content; /* O tamanho do card se molda ao tamanho do texto */
+    min-width: 180px;   /* Garante que os botões e badges fiquem alinhados */
+    max-width: max-content;
+    z-index: 3;
 }
 
-/* Caixa de soltura pontilhada com destaque */
+/* Área de soltura para peças */
 .eap-drop-zone {
-    min-width: 240px;
-    min-height: 80px;
-    border: 2px dashed gray !important;
-    background-color: rgba(13, 110, 253, 0.05);
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    min-width: 190px;
+    min-height: 72px;
+    border: 2px dashed #21252969 !important;
+    background-color: rgba(33, 37, 41, 0.03);
+    transition: all 0.2s ease;
+    z-index: 3;
+    border-radius: 8px;
+    box-sizing: border-box;
 }
 
-/* Linha pontilhada no SVG */
+.eap-drop-zone:hover {
+    background-color: rgba(13, 110, 253, 0.08);
+    border-color: #0d6efd !important;
+}
+
+/* Conectores Ortogonais SVG */
+.eap-connection-line
 .eap-connection-line-dashed {
     fill: none;
-    stroke: gray;
+    stroke: #21252969;
     stroke-width: 2px;
-    stroke-dasharray: 8 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.eap-connection-line-dashed {
+    stroke-dasharray: 6,5;
 }
