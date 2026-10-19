@@ -32,9 +32,9 @@ function carregarEAP() {
     atualizarStatusSalvamento('salvo');
     renderizarPecasSidebar();
 
-    // Chama a renderização inicial do canvas (definida em canvas.js)
-    if (typeof renderizarInicialCanvas === 'function') {
-        renderizarInicialCanvas();
+    // Chama a renderização dinâmica da árvore completa no canvas
+    if (typeof renderizarArvoreCanvas === 'function') {
+        renderizarArvoreCanvas();
     }
 }
 
@@ -196,13 +196,11 @@ function configurarFormularioNovoNo() {
 
         form.reset();
 
-        // Fecha o modal de forma segura utilizando getOrCreateInstance
         if (modalEl) {
             const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
             bsModal.hide();
         }
 
-        // Abre a gaveta para exibir o novo nó recém-criado
         const sidebarEl = document.getElementById('sidebar-nos');
         if (sidebarEl) {
             const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(sidebarEl);

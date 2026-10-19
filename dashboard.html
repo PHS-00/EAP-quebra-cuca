@@ -103,8 +103,16 @@
             <!-- Painel de Ações Fixas na Tela (Fora da área de zoom/pan) -->
             <div class="position-fixed bottom-0 end-0 p-3 z-3 d-flex flex-column align-items-end gap-3">
 
+                <!-- Botão Flutuante (FAB) Visualizador de camada -->
+                <button class="btn btn btn-outline-secondary rounded-pill shadow-lg border border-0 p-3 d-flex align-items-center justify-content-center btn-hover-text" 
+                        id="btn-toggle-niveis" 
+                        title="Exibir Nivels">
+                    <i class="bi bi-layers fs-5"></i>
+                    <span class="btn-text ms-2">Exibir Niveis</span>
+                </button>
+
                 <!-- Botão Flutuante (FAB) Criar Novo Nó -->
-                <button class="btn btn-primary rounded-pill shadow-lg p-3 d-flex align-items-center justify-content-center btn-hover-text" 
+                <button class="btn btn-primary rounded-pill shadow-lg border border-0 p-3 d-flex align-items-center justify-content-center btn-hover-text" 
                         id="btn-add-no-custom" 
                         data-bs-toggle="modal" 
                         data-bs-target="#modalCriarNo"
@@ -232,7 +240,7 @@
     <!-- Scripts do Projeto -->
     <script src="js/storage.js"></script>
     <script src="js/canvas.js"></script>
+    <script src="js/dragdrop.js"></script>
     <script src="js/dashboard.js"></script>
-    
 </body>
 </html>
