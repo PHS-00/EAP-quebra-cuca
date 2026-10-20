@@ -1,0 +1,111 @@
+{
+  "id": "eap-construcao-porta",
+  "titulo": "Construção de uma Porta",
+  "descricao": "Estrutura Analítica do Projeto (EAP) para a fabricação de uma porta, organizada hierarquicamente desde a preparação da matéria-prima até a montagem, inspeção final e embalagem.",
+  "autor": "Pedro Lucas, Pedro Henrique, Jezreel, Guilherme",
+  "versao": "EAP do grupo",
+  "nos": [
+    {
+      "id": "1.0",
+      "label": "Construção de uma Porta",
+      "descricao": "Projeto principal que engloba todas as etapas necessárias para fabricar uma porta, desde a seleção dos materiais até a preparação do produto para entrega.",
+      "paiId": null
+    },
+    {
+      "id": "1.1",
+      "label": "Preparação da matéria-prima",
+      "descricao": "Etapa em que os materiais são selecionados e preparados para garantir condições adequadas de resistência, estabilidade e qualidade durante a fabricação.",
+      "paiId": "1.0"
+    },
+    {
+      "id": "1.1.1",
+      "label": "Seleção de matéria-prima",
+      "descricao": "Escolha dos materiais utilizados na fabricação da porta, como madeira maciça, madeira engenheirada, LVL ou WPC, considerando resistência, durabilidade, custo e acabamento desejado.",
+      "paiId": "1.1"
+    },
+    {
+      "id": "1.1.2",
+      "label": "Controle de umidade (MC)",
+      "descricao": "Verificação e controle do teor de umidade da madeira. Quando necessário, as peças são submetidas à secagem para reduzir o risco de rachaduras, empenamentos e deformações.",
+      "paiId": "1.1"
+    },
+    {
+      "id": "1.2",
+      "label": "Fabricação da estrutura",
+      "descricao": "Etapa em que os materiais preparados são cortados, dimensionados, unidos e protegidos para formar a estrutura interna da porta.",
+      "paiId": "1.0"
+    },
+    {
+      "id": "1.2.1",
+      "label": "Corte e dimensionamento",
+      "descricao": "Corte dos materiais nas dimensões especificadas no projeto, utilizando serras convencionais ou máquinas CNC para produzir montantes, travessas e componentes dos painéis.",
+      "paiId": "1.2"
+    },
+    {
+      "id": "1.2.2",
+      "label": "Produção da estrutura de armação",
+      "descricao": "União das peças por encaixes, colagem ou outros métodos de fabricação, formando o esqueleto interno que proporciona sustentação e estabilidade à porta.",
+      "paiId": "1.2"
+    },
+    {
+      "id": "1.2.3",
+      "label": "Aplicação de fita de borda",
+      "descricao": "Aplicação de fita de acabamento nas bordas especificadas para cobrir as extremidades, melhorar a aparência e ajudar a proteger o material contra umidade e desgaste.",
+      "paiId": "1.2"
+    },
+    {
+      "id": "1.3",
+      "label": "Acabamento da porta",
+      "descricao": "Etapa em que a porta recebe usinagem, revestimentos e tratamentos superficiais para preparar os encaixes, uniformizar a superfície e obter a aparência e a proteção desejadas.",
+      "paiId": "1.0"
+    },
+    {
+      "id": "1.3.1",
+      "label": "Fresagem CNC",
+      "descricao": "Utilização de máquinas controladas por computador para realizar furos, cortes e ranhuras destinados às fechaduras, dobradiças e detalhes decorativos.",
+      "paiId": "1.3"
+    },
+    {
+      "id": "1.3.2",
+      "label": "Prensagem de alta pressão",
+      "descricao": "Aplicação de revestimento laminado sobre a superfície da porta, utilizando pressão e, conforme o processo, calor para favorecer a aderência e proporcionar acabamento e proteção.",
+      "paiId": "1.3"
+    },
+    {
+      "id": "1.3.3",
+      "label": "Linha de lixamento",
+      "descricao": "Passagem da porta por equipamentos de lixamento que removem pequenas irregularidades e uniformizam a superfície, preparando-a para o acabamento.",
+      "paiId": "1.3"
+    },
+    {
+      "id": "1.3.4",
+      "label": "Pintura ou revestimento de PU",
+      "descricao": "Aplicação de pintura ou revestimento de poliuretano (PU), podendo incluir primer, lixamento intermediário, acabamento final e tempo de cura conforme as recomendações do fabricante.",
+      "paiId": "1.3"
+    },
+    {
+      "id": "1.4",
+      "label": "Montagem e entrega",
+      "descricao": "Etapa final da fabricação, na qual são instaladas as ferragens, a porta é inspecionada e o produto aprovado é embalado para armazenamento e transporte.",
+      "paiId": "1.0"
+    },
+    {
+      "id": "1.4.1",
+      "label": "Montagem de ferragens",
+      "descricao": "Instalação de dobradiças, fechaduras, puxadores e outros acessórios nos locais preparados, verificando o alinhamento, o encaixe e o funcionamento.",
+      "paiId": "1.4"
+    },
+    {
+      "id": "1.4.2",
+      "label": "Inspeção final",
+      "descricao": "Verificação das dimensões, do acabamento, da pintura, do revestimento, da estrutura e do funcionamento das ferragens para identificar defeitos antes da embalagem.",
+      "paiId": "1.4"
+    },
+    {
+      "id": "1.4.3",
+      "label": "Embalagem da porta",
+      "descricao": "Proteção e acondicionamento da porta com materiais adequados para reduzir o risco de riscos, impactos e outros danos durante o armazenamento e o transporte.",
+      "paiId": "1.4"
+    }
+  ]
+}
