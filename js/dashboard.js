@@ -208,3 +208,39 @@ function configurarFormularioNovoNo() {
         }
     });
 }
+
+/**
+ * Configura a ação de confirmação de conclusão da EAP no Modal
+ */
+function configurarModalConcluir() {
+    const btnConfirmar = document.getElementById('btn-confirmar-conclusao');
+    if (!btnConfirmar || btnConfirmar.dataset.iniciado) return;
+
+    btnConfirmar.dataset.iniciado = 'true';
+
+    btnConfirmar.addEventListener('click', () => {
+        // 1. Salva o estado atual da EAP antes de navegar
+        if (typeof salvarEstadoSilencioso === 'function') {
+            salvarEstadoSilencioso();
+        } else if (typeof EAPStorage !== 'undefined' && typeof eapAtual !== 'undefined') {
+            EAPStorage.salvarEAP(eapAtual);
+        }
+
+        // 2. Opcional: Desabilita o botão e mostra feedback visual de carregamento
+        btnConfirmar.disabled = true;
+        btnConfirmar.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Avaliando...
+        `;
+
+        // 3. Redireciona para a página de comparação após breve intervalo
+        setTimeout(() => {
+            window.location.href = 'comparacao.html';
+        }, 200);
+    });
+}
+
+// Garante a inicialização assim que o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    configurarModalConcluir();
+});

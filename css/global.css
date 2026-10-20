@@ -147,3 +147,67 @@
 .eap-connection-line-dashed {
     stroke-dasharray: 6,5;
 }
+
+/* ==========================================================================
+   ESTADOS DE VALIDAÇÃO / COMPARAÇÃO DE CARDS
+   ========================================================================== */
+
+/* Item Posicionado Corretamente */
+.eap-card-correct {
+    border: 2px solid #10b981 !important;
+    background-color: #f0fdf4 !important;
+}
+
+/* Item Posicionado sob o Pai/Nível Incorreto */
+.eap-card-wrong-parent {
+    border: 2px solid #f59e0b !important;
+    background-color: #fffbeb !important;
+}
+
+/* Item Novo / Sobrando (Extra) */
+.eap-card-extra {
+    border: 2px dashed #0b5ed7 !important;
+    background-color: #eff6ff !important;
+}
+
+/* Item Faltando na Estrutura */
+.eap-card-missing {
+    border: 2px dashed #ef4444 !important;
+    background-color: #fef2f2 !important;
+    opacity: 0.85;
+}
+
+/* Estilização para o Canvas dentro do Modal de Gabarito */
+#modal-gabarito-area {
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    background-color: #f8f9fa;
+    background-image: radial-gradient(#cbd5e1 1.8px, transparent 1.8px);
+    background-size: 24px 24px;
+}
+
+#comparacao-viewport,
+#gabarito-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: 0 0;
+    will-change: transform;
+}
+
+#comparacao-svg, #gabarito-svg,
+#comparacao-nodes, #gabarito-nodes,
+#comparacao-level-boxes, #gabarito-level-boxes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#comparacao-svg, #gabarito-svg { pointer-events: none; z-index: 2; overflow: visible; }
+#comparacao-nodes, #gabarito-nodes { z-index: 3; }
+#comparacao-level-boxes, #gabarito-level-boxes { pointer-events: none; z-index: 1; }
