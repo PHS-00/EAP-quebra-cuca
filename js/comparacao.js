@@ -93,12 +93,12 @@ function configurarBotaoToggleNiveisGabarito() {
 
         if (exibirGabCaixasNivel) {
             btnToggle.classList.add('active');
-            if (icone) icone.className = 'bi bi-layers-fill fs-5';
+            if (icone) icone.className = 'bi bi-layers-fill fs-5 m-1';
             if (btnText) btnText.textContent = 'Ocultar Níveis';
             btnToggle.title = 'Ocultar Molduras de Nível';
         } else {
             btnToggle.classList.remove('active');
-            if (icone) icone.className = 'bi bi-layers fs-5';
+            if (icone) icone.className = 'bi bi-layers fs-5 m-1';
             if (btnText) btnText.textContent = 'Exibir Níveis';
             btnToggle.title = 'Exibir Molduras de Nível';
         }

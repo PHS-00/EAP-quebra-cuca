@@ -113,10 +113,10 @@ function criarCardEAP(eap) {
                         ${eap.descricao || 'Sem descrição cadastrada.'}
                     </p>
                     <small class="text-muted text-truncate text-break"><i class="bi bi-person me-1"></i>${eap.autor || 'Anônimo'}</small>
-                    <div class="pt-3 border-top mt-2 d-flex align-items-center justify-content-end">
+                    <div class="p-2 border-top d-flex align-items-center justify-content-end">
                         <button class="btn btn-outline-primary btn-lg rounded-pill btn-selecionar-eap btn-hover-text" data-id="${eap.id}">
-                            <span class="btn-text small">Iniciar</span>
-                            <i class="bi bi-arrow-right ms-1"></i>
+                            <span class="btn-text small m-0">Iniciar</span>
+                            <i class="bi bi-arrow-right m-0"></i>
                         </button>
                     </div>
                 </div>

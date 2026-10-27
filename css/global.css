@@ -10,12 +10,12 @@
     transition: max-width 0.3s ease, opacity 0.3s ease, margin-left 0.3s ease;
     display: inline-block;
     vertical-align: middle;
+    margin: 0;
 }
 
 .btn-hover-text:hover .btn-text {
     max-width: 150px;
     opacity: 1;
-    margin-left: 0.35rem;
 }
 
 .eap-card[draggable="true"] {
