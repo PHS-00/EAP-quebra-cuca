@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Lista de cenários padrão disponíveis na pasta /data
     const cenariosPadrao = [
+        'data/eap-construcao-porta.json',
         'data/schema-eap.json',
         // Adicione aqui novos arquivos à medida que forem criados:
         // 'data/eap-exemplo-1.json',
@@ -58,6 +59,40 @@ async function initIndexPage(listaCenarios) {
 }
 
 /**
+ * Prepara o objeto da EAP isolando o Gabarito Original (nosOriginal) 
+ * e resetando a área de trabalho para a montagem do aluno.
+ */
+function iniciarCenario(dadosJson) {
+    if (!dadosJson || !dadosJson.nos) return;
+
+    // 1. Clona e preserva o Gabarito Original intocado do arquivo JSON
+    const nosOriginal = JSON.parse(JSON.stringify(dadosJson.nos));
+
+    // 2. Prepara os nós de trabalho do aluno (apenas a RAIZ inicia no canvas)
+    const nosTrabalho = dadosJson.nos.map(no => {
+        const isRaiz = (!no.paiId || no.paiId === null || no.paiId === '');
+        return {
+            ...JSON.parse(JSON.stringify(no)),
+            noCanvas: isRaiz,
+            paiId: isRaiz ? null : null
+        };
+    });
+
+    // 3. Monta o objeto EAP com a referência limpa do Gabarito
+    const eapObjeto = {
+        ...JSON.parse(JSON.stringify(dadosJson)),
+        nosOriginal: nosOriginal, // Gabarito intacto para comparação
+        nos: nosTrabalho          // Lista dinâmica do jogo
+    };
+
+    // 4. Salva no Storage e redireciona para a Dashboard
+    if (typeof EAPStorage !== 'undefined') {
+        EAPStorage.salvarEAP(eapObjeto);
+    }
+    window.location.href = 'dashboard.html';
+}
+
+/**
  * Gera o HTML de um card de EAP
  */
 function criarCardEAP(eap) {
@@ -71,16 +106,17 @@ function criarCardEAP(eap) {
                         <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
                             <i class="bi bi-diagram-2 me-1"></i>${qtdNos} elementos
                         </span>
-                        <small class="px-2 py-2 badge rounded-pill text-bg-${eap.versao == null ? 'warning' : 'primary'}">${eap.versao || 'Teste'}</small>
+                        <small class="px-2 py-2 badge bg-${eap.versao == null ? 'warning' : 'primary'}-subtle text-${eap.versao == null ? 'warning' : 'primary'}-emphasis border border-${eap.versao == null ? 'warning' : 'primary'} rounded-pill text-bg-${eap.versao == null ? 'warning' : 'primary'}" style="font-size: 0.7rem;">${eap.versao || 'Teste'}</small>
                     </div>
                     <h5 class="card-title fw-bold text-dark">${eap.titulo}</h5>
                     <p class="card-text text-secondary small flex-grow-1">
                         ${eap.descricao || 'Sem descrição cadastrada.'}
                     </p>
-                    <div class="pt-3 border-top mt-2 d-flex align-items-center justify-content-between">
-                        <small class="text-muted"><i class="bi bi-person me-1"></i>${eap.autor || 'Anônimo'}</small>
-                        <button class="btn btn-outline-primary btn-sm rounded-pill btn-selecionar-eap px-5 py-3" data-id="${eap.id}">
-                            Iniciar <i class="bi bi-arrow-right ms-1"></i>
+                    <small class="text-muted text-truncate text-break"><i class="bi bi-person me-1"></i>${eap.autor || 'Anônimo'}</small>
+                    <div class="p-2 border-top d-flex align-items-center justify-content-end">
+                        <button class="btn btn-outline-primary btn-lg rounded-pill btn-selecionar-eap btn-hover-text" data-id="${eap.id}">
+                            <span class="btn-text small m-0">Iniciar</span>
+                            <i class="bi bi-arrow-right m-0"></i>
                         </button>
                     </div>
                 </div>
@@ -100,8 +136,7 @@ function configurarBotoesSelecao(listaEAPs) {
             const eapSelecionada = listaEAPs.find(item => item.id === eapId);
 
             if (eapSelecionada) {
-                EAPStorage.salvarEAP(eapSelecionada);
-                window.location.href = 'dashboard.html';
+                iniciarCenario(eapSelecionada);
             }
         });
     });
@@ -114,6 +149,8 @@ function configurarUploadCustomizado() {
     const btnConfirmar = document.getElementById('btnConfirmarUpload');
     const inputArquivo = document.getElementById('inputJsonFile');
     const alertFeedback = document.getElementById('uploadFeedback');
+
+    if (!btnConfirmar) return;
 
     btnConfirmar.addEventListener('click', () => {
         const arquivo = inputArquivo.files[0];
@@ -134,9 +171,8 @@ function configurarUploadCustomizado() {
                     throw new Error('O arquivo JSON não possui a estrutura esperada (campos "id", "titulo" e "nos" são obrigatórios).');
                 }
 
-                // Salva e redireciona
-                EAPStorage.salvarEAP(conteudoJSON);
-                window.location.href = 'dashboard.html';
+                // Salva com nosOriginal e inicializa a montagem do aluno
+                iniciarCenario(conteudoJSON);
 
             } catch (erro) {
                 exibirErro(`Arquivo inválido: ${erro.message}`);

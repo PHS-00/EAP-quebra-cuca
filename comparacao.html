@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparação & Resultado</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css">
+
+    <!-- Estilos Customizados -->
+    <link rel="stylesheet" href="css/global.css">
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
+        <div class="container-fluid px-3 px-md-4">
+            <a class="btn btn-outline-light btn-sm btn-hover-text rounded-pill d-flex align-items-center gap-1" href="dashboard.html">
+                <i class="bi bi-arrow-left fs-6 m-0"></i>
+                <span class="btn-text small m-0">Voltar</span>
+            </a>
+
+            <a class="navbar-brand d-flex align-items-center gap-2 fw-bold mb-0" href="index.html">
+                <i class="bi bi-diagram-3-fill text-primary fs-4"></i>
+                <span>Quebra-Cuca EAP</span>
+            </a>
+            
+            <!-- Botão que aciona o Popover da Legenda -->
+            <button type="button" 
+                    class="btn btn-outline-light btn-sm rounded-circle p-1 d-flex align-items-center justify-content-center" 
+                    id="btn-popover-legenda"
+                    tabindex="0"
+                    title="Informação das Comparações"
+                    style="width: 38px; height: 38px;">
+                <i class="bi bi-info-circle-fill text-primary small fs-6"></i>
+            </button>
+        </div>
+    </nav>
+
+   <!-- Conteúdo Principal: Container delimitado para o Canvas -->
+    <main class="container-fluid flex-grow-1 p-3 p-md-4 d-flex flex-column overflow-hidden" style="min-height: 0;">
+    
+        <!-- Caixinha (Card Frame) que envolve o Canvas -->
+        <div class="card shadow-sm border-0 flex-grow-1 position-relative overflow-hidden rounded-3">
+            <!-- Área de Trabalho do Canvas posicionada de forma absoluta na caixinha -->
+            <div id="canvas-area" class="position-absolute top-0 start-0 w-100 h-100 overflow-hidden">
+                <!-- Viewport Nativo com Transformação para Pan e Zoom -->
+                <div id="canvas-viewport" class="w-100 h-100 position-absolute top-0 start-0">
+                    
+                    <!-- Camada SVG para desenhar as conexões ortogonais -->
+                    <svg id="canvas-svg" class="position-absolute top-0 start-0 w-100 h-100 pe-none" style="z-index: 2; overflow: visible;"></svg>
+                    
+                    <!-- Camada para as Molduras de Nível -->
+                    <div id="canvas-level-boxes" class="position-absolute top-0 start-0 w-100 h-100 pe-none" style="z-index: 1;"></div>
+
+                    <!-- Container de Nós/Cards Nativos em HTML -->
+                    <div id="canvas-nodes" class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 3;"></div>
+
+                </div>
+
+                <!-- Painel de Ações Fixado DENTRO da caixinha -->
+                <div class="position-absolute bottom-0 end-0 p-3 z-3 d-flex flex-column align-items-end gap-3">
+
+                    <!-- Botão Flutuante (FAB) Visualizador de camada -->
+                    <button class="btn btn btn-outline-secondary rounded-pill shadow-lg border border-0 p-3 d-flex align-items-center justify-content-center btn-hover-text" 
+                            id="btn-toggle-niveis" 
+                            title="Exibir Nivels">
+                        <i class="bi bi-layers fs-5 m-1"></i>
+                        <span class="btn-text m-0">Exibir Niveis</span>
+                    </button>
+
+                    <!-- Botão Flutuante de Diagrama Original -->
+                    <button class="btn btn-primary rounded-pill shadow-lg border border-0 p-3 d-flex align-items-center justify-content-center btn-hover-text" 
+                            id="btn-add-no-custom" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#modalGabaritoOriginal"
+                            title="Abrir Diagrama Original">
+                        <i class="bi bi-eye-fill fs-5 m-1"></i>
+                        <span class="btn-text m-0">Ver</span>
+                    </button>
+
+                    <!-- Controles Flutuantes de Zoom -->
+                    <div class="bg-white shadow-sm border rounded-pill p-1 d-flex align-items-center gap-1">
+                        <button class="btn btn-lg btn-light rounded-circle" id="btn-zoom-out" title="Reduzir Zoom (-)">
+                            <i class="bi bi-dash-lg"></i>
+                        </button>
+                        <span class="font-monospace small px-2 fw-semibold text-secondary" id="zoom-percentage">100%</span>
+                        <button class="btn btn-lg btn-light rounded-circle" id="btn-zoom-in" title="Aumentar Zoom (+)">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                        <button class="btn btn-lg btn-outline-secondary rounded-circle ms-1" id="btn-zoom-reset" title="Centralizar e Resetar Zoom">
+                            <i class="bi bi-aspect-ratio"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal do Gabarito Original (Read-Only com Pan & Zoom) -->
+    <div class="modal fade" id="modalGabaritoOriginal" tabindex="-1" aria-labelledby="modalGabaritoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                
+                <div class="modal-header bg-dark text-white py-2 px-3">
+                    <h5 class="modal-title fs-6 fw-bold d-flex align-items-center gap-2" id="modalGabaritoLabel">
+                        <i class="bi bi-bookmark-check-fill text-primary"></i>
+                        EAP Original
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+
+                <div class="modal-body p-0 position-relative bg-light overflow-hidden" id="modal-gabarito-area">
+                    <!-- Canvas do Gabarito -->
+                    <div id="gabarito-viewport" class="w-100 h-100 position-absolute top-0 start-0">
+                        <svg id="gabarito-svg" class="position-absolute top-0 start-0 w-100 h-100 pe-none" style="z-index: 2; overflow: visible;"></svg>
+                        <div id="gabarito-level-boxes" class="position-absolute top-0 start-0 w-100 h-100 pe-none" style="z-index: 1;"></div>
+                        <div id="gabarito-nodes" class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 3;"></div>
+                    </div>
+
+                    <!-- Controles Flutuantes do Modal -->
+                    <div class="position-absolute bottom-0 end-0 m-3 z-3 d-flex flex-column align-items-end gap-2">
+                        <!-- Botão Flutuante (FAB) Visualizador de camada do Gabarito -->
+                        <button class="btn btn btn-outline-secondary rounded-pill shadow-lg border border-0 p-3 d-flex align-items-center justify-content-center btn-hover-text" 
+                                id="btn-gab-toggle-niveis" 
+                                title="Exibir Níveis">
+                            <i class="bi bi-layers fs-5 m-1"></i>
+                            <span class="btn-text m-0">Exibir Níveis</span>
+                        </button>
+
+                        <div class="bg-white shadow-sm border rounded-pill p-1 d-flex align-items-center gap-1">
+                            <button class="btn btn-light rounded-circle" id="btn-gab-zoom-out" title="Reduzir Zoom (-)">
+                                <i class="bi bi-dash-lg"></i>
+                            </button>
+                            <span class="font-monospace small px-2 fw-semibold text-secondary" id="gab-zoom-percentage">100%</span>
+                            <button class="btn btn-light rounded-circle" id="btn-gab-zoom-in" title="Aumentar Zoom (+)">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary rounded-circle ms-1" id="btn-gab-zoom-reset" title="Centralizar e Resetar Zoom">
+                                <i class="bi bi-aspect-ratio"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="bg-dark border-top py-3 text-center text-white small mt-auto">
+        <div class="container">
+            <span class="fw-bold">Quebra-Cuca EAP &copy;</span>
+            <p class="mb-0">Engenharia de Software I</p>
+        </div>
+    </footer>   
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Scripts do Projeto -->
+    <script src="js/storage.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/comparacao.js"></script>
+</body>
+</html>
